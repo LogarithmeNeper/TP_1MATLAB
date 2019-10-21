@@ -8,7 +8,7 @@ function [w] = omega_optimal(A)
     %Pour avoir convergence il faut 0 < omega < 2
     minR = 9999;
     
-    for w_i=0:0.01:2
+    for w_i=0.01:0.01:1.99
         PI=inv(D+w_i*L)*((1-w_i)*D-w_i*U);
         r = rayon_spectral(PI);
         if(r < minR)
