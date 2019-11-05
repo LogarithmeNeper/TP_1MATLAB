@@ -13,6 +13,8 @@
 \usepackage{verbatim}
 \newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
 \usepackage[hang,small]{caption}
+\usepackage{stmaryrd}
+
 
 \newcommand{\muskern}{\kern-.15ex }
 
@@ -117,6 +119,16 @@
 		
 		On utilise les éléments finis et un développement de Taylor pour modéliser la grille avec les conditions (raccord, bords).
 		
+		\[\nabla^2=\frac{\partial^2}{\partial x^2}+\frac{\partial^2}{\partial y^2}\]
+	
+		\begin{itemize}
+			\item On utilise les intersections comme points d'intérêt.
+			\item On prend $\Omega=\{(x,y)|x\in\llbracket1; 25\rrbracket; y\in\llbracket 1; 20\rrbracket\}$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Application à la grille}
 		Deux parties distinctes :
 		\begin{itemize}
 			\item Équilibre : on part d'une configuration et on fait évoluer jusqu'à atteindre l'équilibre.
@@ -129,7 +141,7 @@
 	\begin{frame}
 		\frametitle{Mise en pratique (1)}
 		\begin{itemize}
-			\item Génération : dépend du nombre de voisins (qui dépend du lieu) $>$ remplissage de la matrice point par point, et choix des conditions de l'énoncé (bords à 100$^\circ$, points chauds à 500$^\circ$)
+			\item Génération : dépend du nombre de voisins direct (qui dépend du lieu) $>$ remplissage de la matrice point par point, et choix des conditions de l'énoncé (bords à 100$^\circ$, points chauds à 500$^\circ$)
 			\item Trace : utilisation de la fonction \emph{surf}.
 		\end{itemize}
 		\begin{center}
@@ -142,6 +154,7 @@
 		\begin{itemize}
 			\item Génération : \textbf{dépend du nombre de voisins} 
 		\end{itemize}
+		\[\nabla^2 f(x,y)=\left(\sum_{(\tilde{x},\tilde{y}\in\mathcal{V}(x,y))} f(\tilde{x},\tilde{y})\right)-|\mathcal{V}(x,y)|f(x,y)\]
 		\begin{center}
 			\includegraphics[width=8cm]{voisins.png}
 		\end{center}
@@ -185,7 +198,7 @@
 		\begin{proposition}[Weilandt]
 			Si $\sigma(M)=\{\lambda_1,...,\lambda_n\}$ avec $U_1,...U_n$ et $V_1,...,V_n$ ve.p. resp. g et d. :
 			\[M-\lambda_1\frac{V_1U_1}{U_1V_1}\]
-			(Dimensions OK, division par un réel et $\mathcal{M}_n(\mathbb{R}$ sinon).
+			(Dimensions OK, division par un réel et $\mathcal{M}_n(\mathbb{R})$ sinon).
 		\end{proposition}
 	\end{frame}
 
@@ -213,5 +226,7 @@
 
 	\begin{frame}
 		\frametitle{Autour du bonus}
+		\centering
+		\includegraphics[width=10cm]{compressed.png}
 	\end{frame}
 \end{document}
