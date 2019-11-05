@@ -1,0 +1,217 @@
+\documentclass[11pt]{beamer}
+\mode<presentation>{\usetheme{CambridgeUS}}
+\usefonttheme{serif}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[frenchb]{babel}
+\usepackage{wrapfig}
+\usepackage{tikz}
+\usepackage{listings}
+\usetikzlibrary{shapes}
+\usepackage{verbatim}
+\newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+\usepackage[hang,small]{caption}
+
+\newcommand{\muskern}{\kern-.15ex }
+
+\newcommand{\ppp}{\textnormal{\textbf{\textit{p\muskern p\muskern p}}}}
+
+\lstset{language={Python}}
+\usepackage{mathrsfs}
+
+\newtheorem{defini}{Définition}[section]
+\newtheorem{corollaire}{Corollaire}[section]
+\newtheorem{theoreme}{Théorème}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemme}{Lemme}[section]
+\newtheorem{lemmule}{Lemmule}[section]
+\newtheorem{qouverte}{Question ouverte}[section]
+\newtheorem{remarque}{Remarque}[section]
+\newtheorem{loi}{Loi}[section]
+
+\newenvironment{preuve}{
+	\noindent\emph{Preuve.}
+}
+
+\newenvironment{exemple}{
+	\noindent\emph{Exemple.}
+}
+
+\newenvironment{idpreuve}{
+	\noindent\emph{Idée de la démonstration.}
+}
+
+\newenvironment{protopreuve}{
+	\noindent\emph{Prototype de la démonstration.}
+}
+
+\newcommand{\dd}{
+	\mathop{}\mathopen{}\mathrm{d}
+}
+
+\newcommand{\sgn}{
+	\mathop{}\mathopen{}\mathrm{sgn}
+}
+
+\newcommand{\diam}{
+	\mathop{}\mathopen{}\mathrm{diam}
+}
+
+\title[Calcul Matriciel]{Calcul matriciel : TP n$^\circ$1}
+
+\author{Binôme n$^\circ$3109}
+\date{\today}
+
+\begin{document}
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	\begin{frame}
+		\tableofcontents
+	\end{frame}
+
+	\section{Première partie : équation de la chaleur}
+	\begin{frame}
+		\tableofcontents[currentsection]
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Méthodes itératives}
+		\begin{itemize}
+			\item Traduction des éléments donnés en énoncé dans le langage MATLAB.
+			\item[$>$] \begin{semiverbatim}
+				relaxation.m, gauss\_seidel.m, jacobi.m, omega\_optimal.m
+			\end{semiverbatim}
+			\item On utilise ces méthodes seulement si les conditions d'application des théorèmes sous-jacents sont remplis. 
+			\item[$>$] \begin{semiverbatim}
+				diag\_dom.m, rayon\_spectral.m
+			\end{semiverbatim}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Implémentation mathématique}
+		Pour les méthodes, on se fond sur les formules suivantes ($AX=B$) : 
+		\begin{proposition}[Gauss-Siedel]
+			\[X_i^{(m+1)}=\frac{1}{[A]_{i,i}}\left(B_i - \sum_{j=1}^{i-1} [A]_{i,j} X_j^{(m+1)} - \sum_{j=i+1}^{n} [A]_{i,j} X_j^{(m)}\right)\]
+		\end{proposition}
+	
+		\begin{proposition}[Jacobi]
+			\[X_i^{(m+1)}=\frac{1}{[A]_{i,i}}\left(B_i - \sum_{\substack{j=1 \\ j \neq i}}^{n} [A]_{i,j} X_j^{(m)} \right)\]
+		\end{proposition}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Implémentation mathématique}
+		\begin{proposition}[Relaxation]
+			Si jamais on a $0<\omega<2$ et dans ce cas seulement, alors :
+			\[X_i^{(m+1)}=X_i^{(m)}+\frac{\omega}{[A]_{i,i}}\left(B_i - \sum_{j=1}^{i-1} [A]_{i,j} x_j^{(m+1)} - \sum_{j=i+1}^{n} [A]_{i,j} X_j^{(m)}\right)\]
+		\end{proposition}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Application à l'équation de la chaleur}		
+		\[\frac{\partial T}{\partial t}=D.\nabla^2 T\]
+		
+		On utilise les éléments finis et un développement de Taylor pour modéliser la grille avec les conditions (raccord, bords).
+		
+		Deux parties distinctes :
+		\begin{itemize}
+			\item Équilibre : on part d'une configuration et on fait évoluer jusqu'à atteindre l'équilibre.
+			\item Chauffage : on part d'une configuration puis on chauffe en continu.
+		\end{itemize}
+	
+		Dans les deux cas : pas d'effets de bord (voisins fictifs : modification du laplacien en conséquence)
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Mise en pratique (1)}
+		\begin{itemize}
+			\item Génération : dépend du nombre de voisins (qui dépend du lieu) $>$ remplissage de la matrice point par point, et choix des conditions de l'énoncé (bords à 100$^\circ$, points chauds à 500$^\circ$)
+			\item Trace : utilisation de la fonction \emph{surf}.
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=5cm]{plateau.png}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Mise en pratique (1)}
+		\begin{itemize}
+			\item Génération : \textbf{dépend du nombre de voisins} 
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=8cm]{voisins.png}
+		\end{center}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Mise en pratique (2)}
+		Puis :
+		\begin{itemize}
+			\item On fait une convergence soit :
+			\[(U_n)_n\to U_{eq} : \forall\varepsilon>0, \exists N\in\mathbb{N}, \forall n\geq N, \underset{dU}{\underbrace{||U_n-U_{eq}||}}<\varepsilon\]
+			\item Or il faut fixer et chercher le rang $N$ (éviter les répétitions inutiles), ici $\varepsilon=10^{-8}$.
+			\item Exponentielle de matrice\footnote{On a un terme, écrit sous forme simplifiée $\frac{dU}{U}(t)$ que l'on intègre. Sort un $\log$ donc une exponentielle de matrice} : correspond à l'équation différentielle considérée.
+		\end{itemize}
+\end{frame}
+
+	\section{Seconde partie : équation des ondes}
+
+	\begin{frame}
+		\tableofcontents[currentsection]
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Méthode générale}
+		\begin{itemize}
+			\item On réutilise les méthodes mises en \oe uvre dans la première partie mais un peu différent.
+			\item On considère un tambour modifié. 
+			\item Équation vue comme un opérateur.
+			\item Différences finies, permettent de chercher les modes propres (cf. diagonalisation de l'opérateur hamiltonien $\hat{H}$ en MQ, corde de Melde en mécanique)
+		\end{itemize}	
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Implémentation mathématique}
+		\begin{proposition}[Méthode de la puissance itérée]
+			Sous les hypothèses :
+			\[X_k=\frac{Y_k}{||Y_k||}\]
+			\[Y_{k+1}=AX_k\]
+			convergent vers la bonne valeur propre.
+		\end{proposition}
+	
+		\begin{proposition}[Weilandt]
+			Si $\sigma(M)=\{\lambda_1,...,\lambda_n\}$ avec $U_1,...U_n$ et $V_1,...,V_n$ ve.p. resp. g et d. :
+			\[M-\lambda_1\frac{V_1U_1}{U_1V_1}\]
+			(Dimensions OK, division par un réel et $\mathcal{M}_n(\mathbb{R}$ sinon).
+		\end{proposition}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Implémentation mathématique}
+		\begin{lemme}
+			On peut adapter avec $A^{-1}$ (en supposant que...) et on trouve alors l'inverse (donc petit module)
+		\end{lemme}
+	
+		\begin{proposition}[Décomposition QR]
+			Si $A=QR$ ($Q\in\mathcal{O}_n(\mathbb{R})$ unitaire, $R$ trig. sup.), alors on peut prendre :
+			\[A_{n+1}=Q^{-1}A_nQ\]
+			Idem pour LU.
+		\end{proposition}
+		$\to$ Valeurs singulières.
+	\end{frame}
+
+		\begin{frame}
+		\frametitle{Mise en pratique}
+		\begin{itemize}
+			\item Initialisation de la grille (600$\times$600) sur le même principe : particularité du barreau central (voisin fictif) et des parties libres.
+			\item Besoin de plus de soin dans la partie mathématique : utilisation d'une puissance itérée avec déflation de \textsc{Weilandt}. 
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Autour du bonus}
+	\end{frame}
+\end{document}
